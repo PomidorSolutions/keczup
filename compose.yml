@@ -1,0 +1,16 @@
+services:
+  keczup:
+    build:
+      context: ./src
+    image: keczup 
+    container_name: keczup 
+    restart: unless-stopped 
+    environment:
+      TOKEN: ${TOKEN}
+    deploy:
+      resources:
+        limits:
+          memory: 350M
+    logging:
+      options:
+        max-size: 25M
