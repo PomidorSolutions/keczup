@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
-import { create as createYoutubeDl } from "youtube-dl-exec";
-import { COOKIES_FILE } from "./consts";
+import { COOKIES_FILE, youtubeDl } from "./consts";
+import { logger } from "./logger";
 import { check_url } from "./utils";
 
 /**
@@ -21,9 +21,6 @@ async function validateDownloadContext(url: string): Promise<void> {
 }
 
 const cookiesFileImport = COOKIES_FILE ? { cookies: COOKIES_FILE } : {};
-const binaryPath =
-  process.platform === "win32" ? "./bin/yt-dlp.exe" : "./bin/yt-dlp";
-const youtubeDl = createYoutubeDl(path.resolve(binaryPath));
 
 /**
  * Downloads a TikTok video using yt-dlp and returns the video as a byte array.
@@ -34,9 +31,9 @@ export async function downloadVideo(url: string): Promise<Uint8Array> {
   let tempdir = null;
   try {
     await validateDownloadContext(url);
-    console.log(`Downloading video from ${url}...`);
+    logger.info(`Downloading video from ${url}...`);
 
-    // console.log("creating temp dir")
+    // logger.info("creating temp dir")
     // Create a temporary file path
     tempdir = await fs.mkdtemp(path.join(tmpdir(), "videodl-"));
     const tmpFilePath = path.join(tempdir, "file.mp4");
@@ -48,6 +45,9 @@ export async function downloadVideo(url: string): Promise<Uint8Array> {
       dumpSingleJson: true,
       // @ts-expect-error - no simulate is actually a working option
       noSimulate: true,
+      // check whether video is vertical and under 5 minutes
+      matchFilter: "aspect_ratio < 1 & duration <= 300",
+      // import cookies file from yt-dlp/youtube-dl export, if specified in environment variable
       ...cookiesFileImport,
     });
 
@@ -60,10 +60,10 @@ export async function downloadVideo(url: string): Promise<Uint8Array> {
     // Delete the temporary directory
     await fs.rm(tempdir, { recursive: true });
 
-    console.log("Successfully downloaded video to buffer");
+    logger.info("Successfully downloaded video to buffer");
     return buffer;
   } catch (error) {
-    console.error(`Failed to download video: ${error}`);
+    logger.error(`Failed to download video: ${error}`);
 
     // Delete the temporary directory if it exists, just in case
     if (tempdir && (await fs.exists(tempdir))) {

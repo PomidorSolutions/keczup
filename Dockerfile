@@ -23,22 +23,15 @@ COPY . .
 
 # [optional] tests & build
 ENV NODE_ENV=production
-# RUN bun test
+RUN bun test
 # RUN bun run build
 
 # copy production dependencies and source code into final image
 FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
-# COPY --from=prerelease /usr/app/src/index.ts .
-COPY --from=prerelease /usr/app/index.ts .
-COPY --from=prerelease /usr/app/video_dl.ts .
-COPY --from=prerelease /usr/app/consts.ts .
-COPY --from=prerelease /usr/app/package.json .
-COPY ./bin/yt-dlp* /usr/app/bin/
-# Conditionally run chmod +x only on non-Windows systems
-RUN chmod +x /usr/app/bin/yt-dlp
+COPY --from=prerelease /usr/app/src/ .
+RUN mkdir -p /usr/app/bin && chown -R bun:bun /usr/app/bin
 
 # run the app
 USER bun
-# EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "index.ts" ]
+ENTRYPOINT ["bun", "index.ts"]

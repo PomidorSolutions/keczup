@@ -3,6 +3,7 @@ import {
   INSTAGRAM_URL_REGEX,
   TIKTOK_DESKTOP_URL_REGEX,
   TIKTOK_MOBILE_URL_REGEX,
+  YOUTUBE_URL_REGEX,
 } from "../src/consts";
 
 describe("Social Media Consts tests", () => {
@@ -35,5 +36,14 @@ describe("Social Media Consts tests", () => {
     expect(
       INSTAGRAM_URL_REGEX.test("https://www.instagram.com/p/C8d8RIIu-ZA/"),
     ).toBe(true);
+  });
+
+  test("YOUTUBE_URL_REGEX", () => {
+    expect(
+      YOUTUBE_URL_REGEX.test("https://www.youtube.com/shorts/wmLmhyPDsNo"),
+    ).toBe(true);
+    expect(
+      YOUTUBE_URL_REGEX.test("https://www.youtube.com/watch?v=qcPS9KKJ5Vg"),
+    ).toBe(false);
   });
 });

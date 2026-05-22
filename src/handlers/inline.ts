@@ -1,6 +1,7 @@
 import { randomUUIDv7 } from "bun";
 import { Composer, InlineQueryResultBuilder, InputFile } from "grammy";
 import { failedArticle, GROUP_ID, URL_REGEXS } from "../consts";
+import { logger } from "../logger";
 import { downloadVideo } from "../video_dl";
 
 const composer = new Composer();
@@ -9,7 +10,7 @@ composer.inlineQuery(URL_REGEXS, async (ctx) => {
   const query = ctx.inlineQuery.query;
   const inlineQueryId = ctx.inlineQuery.id;
   const now = Date.now();
-  console.log(
+  logger.info(
     `query is ${query}, id: ${inlineQueryId}, timestamp: ${now} | sent by ${ctx.inlineQuery.from.id} || @${ctx.inlineQuery.from.username}`,
   );
 
@@ -20,7 +21,7 @@ composer.inlineQuery(URL_REGEXS, async (ctx) => {
   try {
     // Download the TikTok video
     const videoBuffer = await downloadVideo(query);
-    console.log("Video download started successfully!");
+    logger.info("Video download started successfully!");
 
     // Upload the video to Telegram
     const message = await ctx.api.sendVideo(
@@ -28,10 +29,10 @@ composer.inlineQuery(URL_REGEXS, async (ctx) => {
       new InputFile(videoBuffer, "tiktok.mp4"),
     );
 
-    // console.log("Message object:", message);
+    // logger.info("Message object:", message);
 
     if (!message?.video) {
-      console.error("Failed to upload video to Telegram or retrieve file_id");
+      logger.error("Failed to upload video to Telegram or retrieve file_id");
       return;
     }
 
@@ -48,7 +49,7 @@ composer.inlineQuery(URL_REGEXS, async (ctx) => {
     ];
     await ctx.answerInlineQuery(results, { cache_time: 3600 });
   } catch (error) {
-    console.error("Failed to start video download:", error);
+    logger.error(`Failed to start video download: ${error}`);
     await ctx.answerInlineQuery([failedArticle], {
       cache_time: 60,
     });

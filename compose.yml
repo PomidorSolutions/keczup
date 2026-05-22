@@ -1,10 +1,10 @@
 services:
   keczup:
     build:
-      context: ./src
-    image: keczup 
-    container_name: keczup 
-    restart: unless-stopped 
+      context: .
+    image: keczup
+    container_name: keczup
+    restart: unless-stopped
     env_file:
       - .env
     deploy:
