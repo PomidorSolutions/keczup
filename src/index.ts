@@ -1,7 +1,7 @@
 import { Bot } from "grammy";
 import { composition } from "./handlers/composition";
 import { logger } from "./logger";
-import { startup_guard } from "./utils";
+import { handleGracefulExit, startup_guard } from "./utils";
 
 await startup_guard();
 
@@ -17,3 +17,6 @@ bot.start({
     logger.info(`Bot started, Logged in as ${botInfo.username}`);
   },
 });
+
+process.once("SIGINT", () => handleGracefulExit(bot));
+process.once("SIGTERM", () => handleGracefulExit(bot));

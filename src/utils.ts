@@ -1,5 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { Bot } from "grammy";
 import { GROUP_ID, TOKEN, URL_REGEXS, youtubeDl } from "./consts";
 import { logger } from "./logger";
 
@@ -89,4 +90,10 @@ const startup_guard = async () => {
   await checkYtdlUpdates();
 };
 
-export { check_url, startup_guard };
+const handleGracefulExit = (bot: Bot) => {
+  logger.info("Gracefully exiting...");
+
+  bot.stop();
+};
+
+export { check_url, handleGracefulExit, startup_guard };
