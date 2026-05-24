@@ -1,7 +1,42 @@
 {
   "markdown": {},
   "dockerfile": {},
-  "biome": {},
+  "biome": {
+    "linter": {
+      "rules": {
+        "recommended": true,
+        "style": {
+          "useNamingConvention": {
+            "level": "error",
+            "options": {
+              "strictCase": true,
+              "conventions": [
+                {
+                  "selector": { "kind": "variable" },
+                  "formats": ["camelCase", "CONSTANT_CASE"]
+                },
+                {
+                  "selector": { "kind": "typeLike" },
+                  "formats": ["PascalCase"]
+                },
+                {
+                  "selector": { "kind": "function" },
+                  "formats": ["camelCase", "PascalCase"]
+                },
+                {
+                  "selector": { "kind": "objectLiteralProperty" },
+                  "formats": ["camelCase", "snake_case"]
+                }
+              ]
+            }
+          }
+        },
+        "complexity": {
+          "noExcessiveCognitiveComplexity": "warn"
+        }
+      }
+    }
+  },
   "malva": {},
   "markup": {},
   "yaml": {},

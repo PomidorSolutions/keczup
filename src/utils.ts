@@ -9,7 +9,7 @@ import { logger } from "./logger";
  * @param url The URL of the shortform video to download.
  * @returns `true` if the URL is a valid shortform URL, `false` otherwise.
  */
-const check_url = (url: string) => {
+const checkUrl = (url: string) => {
   for (const test of URL_REGEXS) {
     if (test.test(url)) {
       return true;
@@ -31,7 +31,7 @@ const checkLastestVersion = async () => {
   return latestVersion;
 };
 
-const downloadYTDLP = async (latestVersion: string | undefined) => {
+const downloadYtdlp = async (latestVersion: string | undefined) => {
   if (!latestVersion) {
     latestVersion = "latest";
   }
@@ -80,10 +80,10 @@ const checkYtdlUpdates = async () => {
   }
 
   logger.info(`Updating youtube-dl from ${version} to ${latestVersion}`);
-  await downloadYTDLP(latestVersion);
+  await downloadYtdlp(latestVersion);
 };
 
-const startup_guard = async () => {
+const startupGuard = async () => {
   if (!GROUP_ID || !TOKEN) {
     throw new Error("GROUP_ID and TOKEN environment variables are required");
   }
@@ -96,4 +96,4 @@ const handleGracefulExit = (bot: Bot) => {
   bot.stop();
 };
 
-export { check_url, handleGracefulExit, startup_guard };
+export { checkUrl, handleGracefulExit, startupGuard };

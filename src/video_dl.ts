@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { COOKIES_FILE, youtubeDl } from "./consts";
 import { logger } from "./logger";
-import { check_url } from "./utils";
+import { checkUrl } from "./utils";
 
 /**
  * Validates the download context.
@@ -15,7 +15,7 @@ async function validateDownloadContext(url: string): Promise<void> {
     throw new Error("Invalid download context: URL is missing.");
   }
 
-  if (!check_url(url)) {
+  if (!checkUrl(url)) {
     throw new Error("Invalid download context: URL is not a valid video URL.");
   }
 }
