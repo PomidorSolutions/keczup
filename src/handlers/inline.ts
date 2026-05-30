@@ -1,10 +1,35 @@
+import { limit } from "@grammyjs/ratelimiter";
 import { randomUUIDv7 } from "bun";
 import { Composer, InlineQueryResultBuilder, InputFile } from "grammy";
-import { failedArticle, GROUP_ID, URL_REGEXS } from "../consts";
+import {
+  failedArticle,
+  GROUP_ID,
+  RATE_LIMIT,
+  rateLimitedArticle,
+  URL_REGEXS,
+} from "../consts";
 import { logger } from "../logger";
+import { parseRateLimit } from "../utils";
 import { downloadVideo } from "../video_dl";
 
 const composer = new Composer();
+
+const ratelimitOpts = parseRateLimit(RATE_LIMIT);
+
+if (ratelimitOpts) {
+  logger.info(`Rate limit enabled: ${JSON.stringify(ratelimitOpts)}`);
+  composer.use(
+    limit({
+      ...ratelimitOpts,
+      onLimitExceeded: async (ctx) => {
+        await ctx.answerInlineQuery([rateLimitedArticle], {
+          // cache_time: 180,
+          cache_time: 5,
+        });
+      },
+    }),
+  );
+}
 
 composer.inlineQuery(URL_REGEXS, async (ctx) => {
   const query = ctx.inlineQuery.query;
@@ -28,8 +53,6 @@ composer.inlineQuery(URL_REGEXS, async (ctx) => {
       GROUP_ID,
       new InputFile(videoBuffer, "tiktok.mp4"),
     );
-
-    // logger.info("Message object:", message);
 
     if (!message?.video) {
       logger.error("Failed to upload video to Telegram or retrieve file_id");

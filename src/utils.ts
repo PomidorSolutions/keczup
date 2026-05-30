@@ -1,5 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { Bot } from "grammy";
 import { GROUP_ID, TOKEN, URL_REGEXS, youtubeDl } from "./consts";
 import { logger } from "./logger";
 
@@ -8,7 +9,7 @@ import { logger } from "./logger";
  * @param url The URL of the shortform video to download.
  * @returns `true` if the URL is a valid shortform URL, `false` otherwise.
  */
-const check_url = (url: string) => {
+const checkUrl = (url: string) => {
   for (const test of URL_REGEXS) {
     if (test.test(url)) {
       return true;
@@ -30,7 +31,7 @@ const checkLastestVersion = async () => {
   return latestVersion;
 };
 
-const downloadYTDLP = async (latestVersion: string | undefined) => {
+const downloadYtdlp = async (latestVersion: string | undefined) => {
   if (!latestVersion) {
     latestVersion = "latest";
   }
@@ -79,14 +80,33 @@ const checkYtdlUpdates = async () => {
   }
 
   logger.info(`Updating youtube-dl from ${version} to ${latestVersion}`);
-  await downloadYTDLP(latestVersion);
+  await downloadYtdlp(latestVersion);
 };
 
-const startup_guard = async () => {
+const startupGuard = async () => {
   if (!GROUP_ID || !TOKEN) {
     throw new Error("GROUP_ID and TOKEN environment variables are required");
   }
   await checkYtdlUpdates();
 };
 
-export { check_url, startup_guard };
+const handleGracefulExit = (bot: Bot) => {
+  logger.info("Gracefully exiting...");
+
+  bot.stop();
+};
+
+const parseRateLimit = (rateLimitString: string | undefined) => {
+  if (!rateLimitString) {
+    return undefined;
+  }
+
+  const [limit, timeFrame] = rateLimitString.split("/");
+  if (!limit || !timeFrame) {
+    return undefined;
+  }
+
+  return { limit: parseInt(limit, 10), timeFrame: parseInt(timeFrame, 10) };
+};
+
+export { checkUrl, handleGracefulExit, parseRateLimit, startupGuard };
