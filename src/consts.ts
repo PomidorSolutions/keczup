@@ -6,6 +6,7 @@ import { create as createYoutubeDl } from "youtube-dl-exec";
 const GROUP_ID = process.env?.GROUP_ID;
 const TOKEN = process.env?.TOKEN;
 const COOKIES_FILE = process.env?.COOKIES_FILE;
+const RATE_LIMIT = process.env?.RATE_LIMIT;
 
 const TIKTOK_MOBILE_URL_REGEX =
   /^(?:https?:\/\/)?vm\.tiktok\.com\/[\w]{1,20}\/?$/;
@@ -31,6 +32,13 @@ const failedArticle = InlineQueryResultBuilder.article(
   "Download Failed",
 ).text("Download failed. Try again!");
 
+const rateLimitedArticle = InlineQueryResultBuilder.article(
+  randomUUIDv7(),
+  "Request Limit Reached",
+).text(
+  "To keep the bot running smoothly for everyone, you have to slow down. Please try again in a while.",
+);
+
 const binaryPath =
   process.platform === "win32" ? "./bin/yt-dlp.exe" : "./bin/yt-dlp";
 const youtubeDl = createYoutubeDl(path.resolve(binaryPath));
@@ -40,6 +48,8 @@ export {
   failedArticle,
   GROUP_ID,
   INSTAGRAM_URL_REGEX,
+  RATE_LIMIT,
+  rateLimitedArticle,
   TIKTOK_DESKTOP_URL_REGEX,
   TIKTOK_MOBILE_URL_REGEX,
   TOKEN,

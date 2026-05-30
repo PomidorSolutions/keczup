@@ -96,4 +96,17 @@ const handleGracefulExit = (bot: Bot) => {
   bot.stop();
 };
 
-export { checkUrl, handleGracefulExit, startupGuard };
+const parseRateLimit = (rateLimitString: string | undefined) => {
+  if (!rateLimitString) {
+    return undefined;
+  }
+
+  const [limit, timeFrame] = rateLimitString.split("/");
+  if (!limit || !timeFrame) {
+    return undefined;
+  }
+
+  return { limit: parseInt(limit, 10), timeFrame: parseInt(timeFrame, 10) };
+};
+
+export { checkUrl, handleGracefulExit, parseRateLimit, startupGuard };

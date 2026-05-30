@@ -16,6 +16,9 @@ An inline Telegram bot for fetching short-form videos (Shorts, Reels, TikToks) d
 2. Wait while bot fetches the video (indicated by emoji/send button changing into a loading spinner). This may take a few seconds.
 3. Once the video is fetched, a popup with video will appear above the message input field.
 4. Click on it and send it away!
+> [!CAUTION]
+> `@keczupbot` (public instance) has heavy rate limit in place. We kindly advise you to self-host the bot for regular use. Public instance serves as a demonstration only.
+
 
 # Installation
 

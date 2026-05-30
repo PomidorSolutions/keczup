@@ -5,19 +5,20 @@
     "": {
       "name": "keczup",
       "dependencies": {
+        "@grammyjs/ratelimiter": "^1.2.1",
         "grammy": "^1.35.1",
         "pino": "^10.3.1",
         "youtube-dl-exec": "^3.0.20",
       },
       "devDependencies": {
         "@types/bun": "latest",
-      },
-      "peerDependencies": {
         "typescript": "^5",
       },
     },
   },
   "packages": {
+    "@grammyjs/ratelimiter": ["@grammyjs/ratelimiter@1.2.1", "", {}, "sha512-4bmVUBCBnIb2epbDiBLCvvnVjaYg7kDCPR1Ptt6gqoxm5vlD8BjainYv+yjF6221hu2KUv8QAckumDI+6xyGsQ=="],
+
     "@grammyjs/types": ["@grammyjs/types@3.27.3", "", {}, "sha512-yUKMLliGsGbnxu96YUJ7km7B0zy4PzeH/Jvti5705R/LeKDMqkDV4DckMSt+OrliWQpTwQljHE0QLol5zgxBkg=="],
 
     "@kikobeats/time-span": ["@kikobeats/time-span@1.0.13", "", {}, "sha512-CfBK4/EZ73uN/6b5/wOfvWju1Ev/6H+uXqS2Vqd7/dEQTyOsvv4BdOHDqESp4Efa9YyrPPvN3IHU+C4z9FAo3Q=="],

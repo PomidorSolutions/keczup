@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { checkUrl } from "../src/utils";
+import { checkUrl, parseRateLimit } from "../src/utils";
 
 describe("checkUrl", () => {
   test("tiktok desktop", () => {
@@ -36,5 +36,17 @@ describe("checkUrl", () => {
 
   test("youtube video", () => {
     expect(checkUrl("https://www.youtube.com/watch?v=qcPS9KKJ5Vg")).toBe(false);
+  });
+});
+
+describe("parseRateLimit", () => {
+  test("undefined input (env var not set)", () => {
+    const rateLimit = parseRateLimit(undefined);
+    expect(rateLimit).toEqual(undefined);
+  });
+
+  test("defined input", () => {
+    const rateLimit = parseRateLimit("100/1");
+    expect(rateLimit).toEqual({ limit: 100, timeFrame: 1 });
   });
 });
